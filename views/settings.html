@@ -1,0 +1,110 @@
+<html>
+<head>
+	<title>BREAKTIME - Preferences</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/pagetemplate.css" />
+</head>
+<body>
+
+
+	<center>
+		<div class="container" style="margin-top:500px">
+			<div align="justify" style="margin-top:-106px;">
+
+				<h1>PREFERENCES</h1>
+				<br>
+				{{#each users_arr}}
+					{{#if current}}
+						You are currently logged in as {{email}}. There is <div id = "countdown_timer" style = "display:inline"><span id = "timeleft" style = "display:inline">{{timerpref}}</span></div> until your next scheduled break.
+					{{/if}}
+				{{/each}}
+				<br><br>
+
+				<form align = "justify" method = "post" action = "/editSettings">
+					<label for = "timerinterval">Break Interval:</label><br>
+					<div class="btn-group">
+						<button class="btn btn-default btn-lg dropdown-toggle" id = "timerbutton" type="button" data-toggle="dropdown" aria-expanded="false">
+							Select Break Interval <span class="caret"></span>
+						</button>
+
+						<ul class="dropdown-menu" id = "timerintervalmenu" role="menu">
+							<li><a href = "#">20 min</a></li>
+							<li><a href = "#">30 min</a></li>
+							<li><a href = "#">40 min</a></li>
+							<li><a href = "#">50 min</a></li>
+							<li><a href = "#">60 min</a></li>
+						</ul>
+						<input type = "hidden" id = "timerinterval" name = "timerinterval" value = "00:20:00">
+					</div>
+					<input id= "next-btn" class = "btn btn-default btn-xlarge" type = "submit" value = "Submit">
+				</form>
+				<br>
+
+				<br>
+				<br>
+				
+			</div>
+		</div>
+		<div id = "bottomspace"></div>
+	</center>
+	<nav class="nav-bar navbar navbar-fixed-bottom">
+		<center>
+			<div><a href="home"><img src = "navicons/home.png" class = "navicon" id = "homelink"></a></div>
+			<div><a href="levels"><img src = "navicons/levels.png" class = "navicon" id = "levelslink"></a></div>
+			<div><a href="activity"><img src = "navicons/activity.png" class = "navicon" id = "activitylink"></a></div>
+			<div><a href="settings"><img src = "navicons/settings.png" class = "navicon" id = "settingslink"></a></div>
+			<div><a href="help"><img src = "navicons/help.png" class = "navicon" id = "helplink"></a></div>
+			<span class = "stretch"></span>
+		</center>
+	</nav>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="js/countdown.js" type="text/javascript"></script>
+	<script type = "text/javascript">
+	var timepref = $('#countdown_timer span').text();
+	var pathname = window.location.href;
+	var indexOfTimeRemaining = pathname.indexOf('timeremaining=');
+	if(indexOfTimeRemaining == -1)
+		timer = new Countdown(timepref);
+	else
+	{
+		var timeRemaining = pathname.substring(indexOfTimeRemaining+14);
+		if(timeToSeconds(timeRemaining) > timeToSeconds(timepref))
+			timer = new Countdown(timepref);
+		else
+			timer = new Countdown(timeRemaining);
+	}
+	timer.init();
+	timer.start();
+
+	function timeToSeconds(time)
+	{
+		if(time == undefined) time = this.start_time;
+		time_ary = time.split(":"); 
+		var tempHours = parseInt(time_ary[0]);
+		var tempMinutes = parseInt(time_ary[1]);
+		var tempSeconds = parseInt(time_ary[2]);
+		return tempHours * 3600 + tempMinutes * 60 + tempSeconds;
+	}
+	$('#homelink').click(function(e) {
+		e.preventDefault();
+		window.location.href = "home?timeremaining=" + timer.getTimeRemaining();
+	});
+	$('#levelslink').click(function(e) {
+		e.preventDefault();
+		window.location.href = "levels?timeremaining=" + timer.getTimeRemaining();
+	});
+	$('#activitylink').click(function(e) {
+		e.preventDefault();
+		window.location.href = "activity?timeremaining=" + timer.getTimeRemaining();
+	});
+	$('#settingslink').click(function(e) {
+		e.preventDefault();
+		window.location.href = "settings?timeremaining=" + timer.getTimeRemaining();
+	});
+	$('#helplink').click(function(e) {
+		e.preventDefault();
+		window.location.href = "help?timeremaining=" + timer.getTimeRemaining();
+	});
+	</script>
+</body>
+</html>

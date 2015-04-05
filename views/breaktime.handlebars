@@ -1,0 +1,146 @@
+<html>
+	<head>
+		<title>BREAKTIME - Breaktime!</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/pagetemplate.css" />
+	</head>
+	<body>
+
+		
+		<center>
+
+			<div class="container" style="margin-top:394px" align = "left">
+				<h1>BREAKTIME!</h1><br>
+				{{#each users_arr}}
+					{{#if current}}
+						<div id = "usernametext">Welcome, <a href = "settings" id = "usernamelink">{{email}}</a> | Level: <span id = "level">{{currentlevel}}</span> | XP: <span id = "xp">{{currentxp}}</span> | XP to next level: <span id = "xpremaining">0</span> | <a href ="logout">Logout</a></div>
+						<div id = "usernametextshort">Welcome, <a href = "settings" id = "usernamelink">{{email}}</a> | Level: <span id = "level">{{currentlevel}}</span> | <a href ="logout">Logout</a></div>
+						
+					{{/if}}
+				{{/each}}
+				Why don't you try this level <span id = "leveldisplay"></span> activity?<br><br>
+				<div class = "jumbotron" id = "suggestion">
+					<span id = "description" class = "plaintext"></span><br><br>
+					<span id = "experience"></span>
+				</div>
+				<input id = "complete_btn" class = "btn btn-default btn-xlarge completion-btn" type = "button" value = "Complete!"></input>
+				<input id = "somethingelse_btn" class = "btn btn-default btn-xlarge completion-btn" type = "button" value = "Something else, please!"></input>
+				<input id = "notnow_btn" class = "btn btn-default btn-xlarge completion-btn" type = "button" value = "Skip break"></input>
+				<div class = "btn-satisfaction">Did you enjoy this break? <br><br></div>
+				<input id = "like_btn" class = "btn btn-default btn-xlarge btn-satisfaction" type = "button" value = "Yes"></input>
+				<input id = "dislike_btn" class = "btn btn-default btn-xlarge btn-satisfaction" type = "button" value = "No"></input>
+				<div class = "btn-productivity">Were you productive before this break? <br><br></div>
+				<input id = "productive_btn" class = "btn btn-default btn-xlarge btn-productivity" type = "button" value = "Yes"></input>
+				<input id = "notproductive_btn" class = "btn btn-default btn-xlarge btn-productivity" type = "button" value = "No"></input>
+				<div class = "btn-return">Thanks for your feedback. <br><br></div>
+				<form align = "justify" method = "post" action = "/activityComplete">
+					<input id = "xp2" name = "experienceGained" type = "hidden"></input>
+					<input id = "level2" name = "levelDone" type = "hidden"></input>
+					<input id = "enjoyedactivity" name = "satisfaction" type = "hidden"></input>
+					<input id = "productive" name = "productivity" type = "hidden"></input>
+					<input id = "return_btn" class = "btn btn-default btn-xlarge btn-return" type = "submit" value = "Click to restart the timer."></input>
+				</form>
+			</div>
+			<div id = "bottomspace"></div>
+		</center>
+		<nav class="nav-bar navbar navbar-fixed-bottom">
+ 		<center>
+ 			<div><a href="home"><img src = "navicons/home.png" class = "navicon"></a></div>
+	 		<div><a href="levels"><img src = "navicons/levels.png" class = "navicon"></a></div>
+	 		<div><a href="activity"><img src = "navicons/activity.png" class = "navicon"></a></div>
+	 		<div><a href="settings"><img src = "navicons/settings.png" class = "navicon"></a></div>
+	 		<div><a href="help"><img src = "navicons/help.png" class = "navicon"></a></div>
+	 		<span class = "stretch"></span>
+ 		</center>
+		</nav>
+		<script src="https://code.jquery.com/jquery.js"></script>
+		<script src="suggestions.json"></script>
+		<script src="levelThresholds.json"></script>
+		<script type="text/javascript">
+
+			window.onload = function() {
+
+				var pathname = window.location.href;
+				var currentLevel = parseInt($('#level').text(),10);
+				if(currentLevel == 1)
+				{
+					$("#somethingelse_btn").css("display","none");
+				}
+				var indexOfLevel = pathname.indexOf('level=');
+				var currentExperience = parseInt($('#xp').text(),10);
+				
+				var nextThreshold = thresholds_arr.thresholds[currentLevel].threshold;
+				var xpNeeded = nextThreshold - currentExperience;
+				$("#xpremaining").text(xpNeeded);
+				if(indexOfLevel == -1)
+					var level = Math.floor(Math.random() * currentLevel + 1);
+				else
+					var level = pathname.substring(indexOfLevel+6);
+				if(isNaN(level) || level > currentLevel || level < 1)
+					level = currentLevel;
+				$("#leveldisplay").text(level);
+				$("#xp2").val(activities_arr.activities[level-1].experiencePoints);
+				$("#level2").val(level);
+				/*var suggestions;
+				$.getJSON('suggestions.json', {}, function(data) {
+					suggestions = activities_arr;
+					console.log("hello");
+				});*/
+				//$("#suggestion #name").text(activities_arr.activities[level-1].name);
+				$("#suggestion #description").text(activities_arr.activities[level-1].description);
+				$("#suggestion #experience").text("This is worth " + activities_arr.activities[level-1].experiencePoints + " experience points.");
+
+				$('#somethingelse_btn').click(function() {
+					var oldLevel = level;
+					if(currentLevel > 1)
+					{
+						level = Math.floor((Math.random() * currentLevel) + 1);
+						while(oldLevel == level)
+						{
+							level = Math.floor((Math.random() * currentLevel) + 1);
+						}
+					}
+					$("#leveldisplay").text(level);
+					$("#xp2").val(activities_arr.activities[level-1].experiencePoints);
+					$("#level2").val(level);
+					//$("#suggestion #name").text(activities_arr.activities[level-1].name);
+					$("#suggestion #description").text(activities_arr.activities[level-1].description);
+					$("#suggestion #experience").text("This is worth " + activities_arr.activities[level-1].experiencePoints + " experience points.");
+				});
+				$('#complete_btn').click(function(){
+					$(".completion-btn").css("display","none");
+					$(".btn-satisfaction").css("display", "inline");
+			   	});
+			   	$('#notnow_btn').click(function(){
+					window.location.href = "home";
+			   	});
+			   	$('#like_btn').click(function(){
+			   		$(".btn-satisfaction").css("display", "none");
+			   		$(".btn-productivity").css("display", "inline");
+			   		$("#enjoyedactivity").val("true");
+			   	});
+			   	$('#dislike_btn').click(function(){
+					$(".btn-satisfaction").css("display", "none");
+			   		$(".btn-productivity").css("display", "inline");
+			   		$("#enjoyedactivity").val("false");
+			   	});
+			   	$('#productive_btn').click(function(){
+					$(".btn-productivity").css("display", "none");
+			   		$(".btn-return").css("display", "inline");
+			   		$("#productive").val("true");
+			   	});
+			   	$('#notproductive_btn').click(function(){
+					$(".btn-productivity").css("display", "none");
+			   		$(".btn-return").css("display", "inline");
+			   		$("#productive").val("false");
+			   	});
+			   	/*$('#return_btn').click(function(){
+					$.post("activityComplete", {experienceGained: activities_arr.activities[level-1].experiencePoints});
+					window.location.href = "activityComplete";
+			   	});*/
+
+			};
+		</script>
+
+	</body>
+</html>

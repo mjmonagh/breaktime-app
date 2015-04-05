@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<head>
+	<title>BREAKTIME - Register</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/entry.css" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+</head>
+<body>
+	<center>
+		<div id = "content" align = "center"> 
+			<img src = "../images/logo.png" id = "logo"><br><br>
+			<div class = "desktopcontainer">
+				<h2>REGISTER</h2>
+				<span id = "registererror"></span>
+				<form align = "left" method = "post" action = "/registerHandler">
+					<div id = "formtop" class = "form-group">
+						<label for = "email">Email address: </label><br>
+						<input id = "email" name = "email" type = "email" class = "form-control" placeholder="Email"></input>
+						<label for = "password">Password: </label><br class = "desktoponly">
+						<input id = "password" name = "password" type = "password" class = "form-control" placeholder="Password"></input>
+						<label for = "verifypassword">Verify Password: </label><br class = "desktoponly">
+						<input id = "verifypassword" type = "password" class = "form-control" placeholder="Verify Password"></input>
+						<br>
+						Break Interval:<br><div id = "breakintervaldescription">(How long would you like to work for in one sitting without being interrupted?)</div><br>
+						<div class="btn-group">
+							<button class="btn btn-default btn-lg dropdown-toggle" id = "timerbutton" type="button" data-toggle="dropdown" aria-expanded="false">
+								Select Break Interval <span class="caret"></span>
+							</button>
+
+							<ul class="dropdown-menu" id = "timerintervalmenu" role="menu">
+								<li><a href = "#">20 min</a></li>
+								<li><a href = "#">30 min</a></li>
+								<li><a href = "#">40 min</a></li>
+								<li><a href = "#">50 min</a></li>
+								<li><a href = "#">60 min</a></li>
+							</ul>
+							<input type = "hidden" id = "timerinterval" name = "timerinterval" value = "00:20:00">
+						</div>
+						<br>
+						<!--<select>
+							<option value="interval">Choose Interval</option>
+							<option value="1">20 min</option>
+							<option value="2">30 min</option>
+							<option value="3">40 min</option>
+							<option value="4">50 min</option>
+							<option value="5">60 min</option>
+						</select>-->
+					</div>
+					<br>
+		<!--Work from 
+		<select>
+		<option value="Begin work hours">Hour</option>
+		<option value="1">1</option>
+		<option value="2">2 </option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		</select>
+		:
+		<input type="minutes" placeholder="Min" size = "3">
+		<select>
+		<option value="AM">AM</option>
+		<option value="PM">PM</option>
+
+		</select>
+		to 
+
+		<select>
+		<option value="End work hours">Hour</option>
+		<option value="1">1</option>
+		<option value="2">2 </option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		</select>
+		:
+		<input type="minutes" placeholder="Min" size = "3">
+		<select>
+		<option value="AM">AM</option>
+		<option value="PM">PM</option>
+
+		</select>-->
+					
+				<center>
+					<input id= "back-btn" class = "btn btn-default btn-xlarge" type = "button" value = "Back" onClick="history.go(-1);return true;">
+					<input id= "next-btn" class = "btn btn-default btn-xlarge" type = "submit" value = "Next">
+				</center>
+				</form>
+				<br>
+			</div>
+
+			
+		</div>
+		<div id = "bottomspace" class = "desktoponly"></div>
+	</center>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src = "js/bootstrap.min.js"></script>
+	<script type = "text/javascript">
+		$('#timerintervalmenu li a').click(function(e) {
+			e.preventDefault();
+			var value = $(this).text();
+			$('#timerbutton').text(value);
+			if(value == '20 min')
+				$('#timerinterval').val("00:20:00");
+			else if(value == '30 min')
+				$('#timerinterval').val("00:30:00");
+			else if(value == '40 min')
+				$('#timerinterval').val("00:40:00");
+			else if(value == '50 min')
+				$('#timerinterval').val("00:50:00");
+			else if(value == '60 min')
+				$('#timerinterval').val("00:60:00");
+		});
+		$('#next-btn').click(function(e) {
+			if($('#password').val() != $('#verifypassword').val())
+			{
+				e.preventDefault();
+				$("#registererror").text("Registration failed. Passwords do not match.");
+			}
+			else if($('#password').val().length < 6)
+			{
+				e.preventDefault();
+				$("#registererror").text("Registration failed. Password must be at least 6 characters long.");
+			}
+		});
+	</script>
+
+	<!--<script>
+      $(document).ready(function(){
+        var user,pass;
+        $("#next-btn").click(function(e){
+          	user=$("#email").val();
+          	pass=$("#password").val();
+          	$.post("/registerHandler",{email: user,password: pass});
+        });
+      });
+    </script>-->
+</body>

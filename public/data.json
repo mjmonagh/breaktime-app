@@ -1,0 +1,17 @@
+{
+	"users_arr": [
+		{
+			"email": "j3leu@ucsd.edu",
+			"password": "password",
+			"workbegin": "",
+			"workend" : "",
+			"timerpref": "00:30:00",
+			"level" : "",
+			"totexpoints" : "",
+			"dailyexpoints_arr":[],
+			"gpsmetrics" :""
+
+
+		}
+	]
+}
